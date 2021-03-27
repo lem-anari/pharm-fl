@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "913821619562",
+    "project_id": "farma-dev-de369",
+    "storage_bucket": "farma-dev-de369.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:913821619562:android:7e44cac66a991b0acd8113",
+        "android_client_info": {
+          "package_name": "com.farmatest.farmaApp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "913821619562-0g9r8mk6fopnfln72u1dk2e1aa5vlg8p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.farmatest.farmaApp",
+            "certificate_hash": "df139b131bc8d36445eb9ad0a0eabd7a800035ee"
+          }
+        },
+        {
+          "client_id": "913821619562-i9mf3beslsr7mvbd1lfgj74c5lgljp0u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdX0xog2Xaoqwg5-ZXV-wdiXgxNOFjvvo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "913821619562-i9mf3beslsr7mvbd1lfgj74c5lgljp0u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
