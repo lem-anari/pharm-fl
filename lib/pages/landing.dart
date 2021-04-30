@@ -14,5 +14,6 @@ class LandingPage extends StatelessWidget {
     final bool isLoggedIn = customUser != null;
 
     return isLoggedIn ? HomePage() : AuthorizationPage();
+    //loginpage
   }
 }
