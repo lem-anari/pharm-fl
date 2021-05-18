@@ -2,7 +2,6 @@ import 'package:farma_app/domain/user.dart';
 import 'package:farma_app/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import '../database/auth.dart';
 
 class AuthorizationPage extends StatefulWidget {
   AuthorizationPage({Key key}) : super(key: key);
@@ -134,8 +133,8 @@ class _AuthorizationPageState extends State<AuthorizationPage> {
     void _registerButtonAction() async {
       _email = _emailController.text;
       _password = _passwordController.text;
-      int id = CustomAuth.register(_email, _password);
-      print('Id -> $id');
+//      int id = CustomAuth.register(_email, _password);
+//      print('Id -> $id');
       if (_email.isEmpty || _password.isEmpty) {
         return;
       }

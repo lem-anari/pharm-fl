@@ -32,6 +32,7 @@ import 'dart:convert';
 
 import 'package:farma_app/pages/home.dart';
 import 'package:farma_app/pages/loginPage.dart';
+import 'package:farma_app/pages/newsPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -43,10 +44,11 @@ class FarmaApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "Pharma Control",
+      title: "PharmaC.",
       debugShowCheckedModeBanner: false,
       home: MainPage(),
       theme: ThemeData(
+//          backgroundColor: Colors.red,
           accentColor: Colors.white70
       ),
     );
@@ -88,32 +90,58 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+//      backgroundColor: Colors.red,
       appBar: AppBar(
-        title: Text("Pharma Control", style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.black,//color
+        title: Text("PharmaC.", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal),),
         actions: <Widget>[
           FlatButton(
+            minWidth: 12,
+            onPressed: () {
+//              sharedPreferences.clear();
+//              sharedPreferences.commit();
+//              sharedPreferences.setInt('news', 3);
+              Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => NewsPage()), (Route<dynamic> route) => false);
+            },
+            child: Icon(Icons.new_releases_outlined, color: Colors.white),
+          ),
+          FlatButton(
+            minWidth: 12,
             onPressed: () {
               sharedPreferences.clear();
               sharedPreferences.commit();
               Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => LoginPage()), (Route<dynamic> route) => false);
             },
-            child: Text("Log Out", style: TextStyle(color: Colors.white)),
+//            child: Text("Log Out", style: TextStyle(color: Colors.white)),
+            child: Icon(Icons.logout, color: Colors.white),
           ),
         ],
       ),
 //      body: Center(child: Text("Main Page")),
       body: HomePage(),
-      drawer: Drawer(
+
+    drawer: Theme(
+    data: Theme.of(context).copyWith(
+//    canvasColor: Colors.black, //
+//      cardColor: Colors.black,
+//      colorScheme: Colors.black
+    ),child:
+      Drawer(
         child: new ListView(
+
           children: <Widget>[
             new UserAccountsDrawerHeader(
               accountName: new Text(userName??'username'),
               accountEmail: new Text(userEmail??'email'),
+              decoration: BoxDecoration(
+                color: Colors.black,
+              ),
             ),
             new Divider(),
+
           ],
         ),
       ),
-    );
+    ));
   }
 }

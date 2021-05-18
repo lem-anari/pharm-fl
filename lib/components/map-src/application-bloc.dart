@@ -68,6 +68,7 @@ class ApplicationBloc with ChangeNotifier {
   togglePlaceType(String value, bool selected) async {
     if (selected) {
       placeType = value;
+//      print(placeType);
     } else {
       placeType = null;
     }
@@ -77,6 +78,11 @@ class ApplicationBloc with ChangeNotifier {
           selectedLocationStatic.geometry.location.lat,
           selectedLocationStatic.geometry.location.lng,
           placeType);
+
+      print('PLACES:');
+      print(selectedLocationStatic.geometry.location.lat);
+      print(selectedLocationStatic.geometry.location.lng);
+      print(places);
       markers = [];
       if (places.length > 0) {
         var newMarker = markerService.createMarkerFromPlace(places[0], false);

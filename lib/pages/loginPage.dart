@@ -27,7 +27,11 @@ class _LoginPageState extends State<LoginPage> {
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-              colors: [Colors.blue, Colors.teal],
+//              colors: [Colors.pink[300], Colors.pink[100]],
+              colors: [Color.fromRGBO(199,159,239, 1), Colors.pink[100]],
+
+//              colors: [Colors.pink[200], Color.fromRGBO(230, 230, 250, 0.9)],
+
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter),
         ),
@@ -36,15 +40,23 @@ class _LoginPageState extends State<LoginPage> {
             headerSection(),
             textSection(),
             (showlogin
-                ? GestureDetector(
-                child: Text('Забыли пароль?',
-                    style: TextStyle(
-                        fontSize: 15, color: Colors.white)),
-                onTap: () {
+                ? Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                GestureDetector(
+                    child: Text('Забыли пароль?',
+                        style: TextStyle(
+                            fontSize: 15, color: Colors.white)),
+                    onTap: () {
 //                  setState(() {
 //                    showlogin = false;
 //                  });
-                })
+                    }),
+                SizedBox(width: 35, height: 50)
+              ],
+            )
+
+
                 : SizedBox()),
             buttonSection(),
 //            SizedBox(height: 100),
@@ -119,8 +131,12 @@ class _LoginPageState extends State<LoginPage> {
     };
     var jsonResponse = null;
 
-//    var response = await http.post(Uri.parse("http://127.0.0.1:8000/api/login"), body: data);
     var response = await http.post(Uri.parse("http://10.0.2.2:8000/api/login"), body: data);
+//    var response = await http.post(Uri.parse("http://192.168.1.102:8000/api/login"), body: data);
+
+
+//    var response = await http.post(Uri.parse("http://127.0.0.1:31774/api/login"), body: data);//31774
+
     if(response.statusCode == 200) {
       jsonResponse = json.decode(response.body);
       print('Response status: ${response.statusCode}');
@@ -132,6 +148,9 @@ class _LoginPageState extends State<LoginPage> {
         sharedPreferences.setString("token", jsonResponse['token']);
         sharedPreferences.setString("name", jsonResponse['name']);
         sharedPreferences.setString("email", jsonResponse['email']);
+        sharedPreferences.setString("user_id", jsonResponse['user_id'].toString());
+//        print('WIHEFOIWHEFHEWLFHL');
+//        print(sharedPreferences.getString("user_id"));
         Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => MainPage()), (Route<dynamic> route) => false);
       }
     }
@@ -172,6 +191,7 @@ class _LoginPageState extends State<LoginPage> {
           _isLoading = false;
         });
         sharedPreferences.setString("token", jsonResponse['token']);
+//        sharedPreferences.setString("user_id", jsonResponse['user_id']);
         Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => MainPage()), (Route<dynamic> route) => false);
       }
     }
@@ -208,7 +228,7 @@ class _LoginPageState extends State<LoginPage> {
 
         },
         elevation: 0.0,
-        color: Colors.purple,
+        color: Colors.pink[400],
         child: (showlogin
             ? Text("Sign In", style: TextStyle(color: Colors.white70))
             : Text("Sign Up", style: TextStyle(color: Colors.white70))),
@@ -239,7 +259,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Container textSection() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
+      padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 0),
       child: Column(
         children: <Widget>[
           (showlogin
@@ -304,12 +324,12 @@ class _LoginPageState extends State<LoginPage> {
   Container headerSection() {
     return Container(
       margin: EdgeInsets.only(top: 50.0),
-      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 30.0),
-      child: Text("Pharma",
+      padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 25.0),
+      child: Text("Pharmacy Control",
           style: TextStyle(
               color: Colors.white70,
-              fontSize: 40.0,
-              fontWeight: FontWeight.bold)),
+              fontSize: 30.0,
+              fontWeight: FontWeight.normal)),
     );
   }
 }
