@@ -1,9 +1,7 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:farma_app/components/map-src/application-bloc.dart';
-import 'package:farma_app/components/workouts-list.dart';
 import 'package:farma_app/pages/newsPage.dart';
 import 'package:farma_app/pages/pharmacyPage.dart';
-import 'package:farma_app/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:farma_app/components/map.dart';
 import 'package:provider/provider.dart';
