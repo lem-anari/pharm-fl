@@ -30,7 +30,9 @@
 
 import 'dart:convert';
 
+import 'package:farma_app/domain/salary.dart';
 import 'package:farma_app/pages/home.dart';
+import 'package:farma_app/pages/homeAdmin.dart';
 import 'package:farma_app/pages/loginPage.dart';
 import 'package:farma_app/pages/newsPage.dart';
 import 'package:flutter/material.dart';
@@ -65,12 +67,124 @@ class _MainPageState extends State<MainPage> {
   SharedPreferences sharedPreferences;
   String userName;
   String userEmail;
+  String role;
 
   @override
   void initState() {
     super.initState();
     checkLoginStatus();
+    fetchUserFines().then((value) {
+      setState((){
+        _userFines.addAll(value);
+      });
+    });
+    fetchUserSalary().then((value) {
+      setState((){
+        _userSalary.addAll(value);
+      });
+    });
+    fetchUserSalaryStavka().then((value) {
+      setState((){
+        _userSalaryStavka.addAll(value);
+      });
+    });
+    fetchUserFinesStory().then((value) {
+      setState((){
+        _userFinesStory.addAll(value);
+      });
+    });
+  }
 
+  List<SalaryFines> _userFines = List<SalaryFines>();
+  Future <List<SalaryFines>> fetchUserFines() async{
+    sharedPreferences = await SharedPreferences.getInstance();
+    String UId =  sharedPreferences.getString("user_id");
+    Map data = {
+      'user_id': UId.toString()
+    };
+    var response = await http.post(Uri.parse("http://10.0.2.2:8000/api/salaryEmployee/salaryFinesOfEmployee"), body: data);
+    var fines = List<SalaryFines>();
+
+    if(response.statusCode == 200) {
+
+      Map<String, dynamic> map = json.decode(response.body);
+      List<dynamic> finesJson = map["fines_month"];
+      print('ffffffffffff: ${finesJson}');
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+      for(var fineJson in finesJson){
+        fines.add(SalaryFines.fromJson(fineJson));
+      }
+    }
+    print('dddddddd: ${fines.length}');
+    return fines;
+  }
+
+  List<SalaryUser> _userSalary = List<SalaryUser>();
+  Future <List<SalaryUser>> fetchUserSalary() async{
+    sharedPreferences = await SharedPreferences.getInstance();
+    String UId =  sharedPreferences.getString("user_id");
+    Map data = {
+      'user_id': UId.toString()
+    };
+    var response = await http.post(Uri.parse("http://10.0.2.2:8000/api/salaryEmployee/salaryFinesOfEmployee"), body: data);
+    var salaries = List<SalaryUser>();
+
+    if(response.statusCode == 200) {
+
+      Map<String, dynamic> map = json.decode(response.body);
+      List<dynamic> salaryJson = map["salary"];
+      print('ffffffffffff: ${salaryJson}');
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+      for(var fineJson in salaryJson){
+        salaries.add(SalaryUser.fromJson(fineJson));
+      }
+    }
+    print('dddddddd: ${salaries.length}');
+    return salaries;
+  }
+  List<SalaryUserStavka> _userSalaryStavka = List<SalaryUserStavka>();
+  Future <List<SalaryUserStavka>> fetchUserSalaryStavka() async{
+    sharedPreferences = await SharedPreferences.getInstance();
+    String UId =  sharedPreferences.getString("user_id");
+    Map data = {
+      'user_id': UId.toString()
+    };
+    var response = await http.post(Uri.parse("http://10.0.2.2:8000/api/salaryEmployee/salaryFinesOfEmployee"), body: data);
+    var salariesSt = List<SalaryUserStavka>();
+    if(response.statusCode == 200) {
+      Map<String, dynamic> map = json.decode(response.body);
+      List<dynamic> salaryJson = map["salaryStavka"];
+      for(var stavkaJson in salaryJson){
+        salariesSt.add(SalaryUserStavka.fromJson(stavkaJson));
+      }
+    }
+    return salariesSt;
+  }
+
+  List<FinesStory> _userFinesStory = List<FinesStory>();
+  Future <List<FinesStory>> fetchUserFinesStory() async{
+    sharedPreferences = await SharedPreferences.getInstance();
+    String UId =  sharedPreferences.getString("employee_id");
+    Map data = {
+      'user_id': UId.toString()
+    };
+    print('EMPLOYEE ID ${UId}');
+    var response = await http.post(Uri.parse("http://10.0.2.2:8000/api/salaryEmployee/salaryFinesOfEmployee"), body: data);
+    var fines = List<FinesStory>();
+    if(response.statusCode == 200) {
+      Map<String, dynamic> map = json.decode(response.body);
+      List<dynamic> salaryJson = map["array_fines"];
+      for(var stavkaJson in salaryJson){
+        fines.add(FinesStory.fromJson(stavkaJson));
+      }
+    }
+    print('FINES');
+//    print(fines);
+    return fines;
   }
 
   checkLoginStatus() async {
@@ -84,8 +198,9 @@ class _MainPageState extends State<MainPage> {
   getUserCredentials() async{
       userName =  await sharedPreferences.getString("name");
       userEmail = await sharedPreferences.getString("email");
-      setState(() {
-        });
+      role = await sharedPreferences.getString("role");
+      setState(() {});
+
   }
   @override
   Widget build(BuildContext context) {
@@ -112,13 +227,12 @@ class _MainPageState extends State<MainPage> {
               sharedPreferences.commit();
               Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => LoginPage()), (Route<dynamic> route) => false);
             },
-//            child: Text("Log Out", style: TextStyle(color: Colors.white)),
             child: Icon(Icons.logout, color: Colors.white),
           ),
         ],
       ),
-//      body: Center(child: Text("Main Page")),
-      body: HomePage(),
+      // ignore: unrelated_type_equality_checks
+      body: (role == 1) ? HomePageAdmin() : HomePage(),
 
     drawer: Theme(
     data: Theme.of(context).copyWith(
@@ -138,10 +252,100 @@ class _MainPageState extends State<MainPage> {
               ),
             ),
             new Divider(),
+      Padding(
+        padding: EdgeInsets.symmetric(vertical: 10,  horizontal: 15),
+        child:
+      Align(
+        alignment: Alignment.topCenter,
+        child: Expanded(
+            child: SizedBox(
+                height: 100.0,
+            child: ListView.builder(
 
+            itemCount: _userFines.length,
+            itemBuilder: (context, i) {
+              return
+                Column(
+                  children: [
+                    Text('текущий месяц'),
+                Row(
+                  children: [
+                    Text('штрафы: '),
+                    (_userFines[i].fines != 'null') ?
+                    Text(_userFines[i].fines) :
+                    Text('0')
+                  ],
+                ),
+                Row(
+                  children: [
+                    Text('бонусы: '),
+                    (_userFines[i].fines != 'null') ?
+                    Text(_userFines[i].fines) :
+                    Text('will be')
+                  ],
+                ),
+                Row(
+                  children: [
+                    Text('ставка: '),
+                    (_userSalaryStavka[i].salary != 'null') ?
+                    Text(_userSalaryStavka[i].salary) :
+                    Text('0')
+                  ],
+                ),
+                    Row(
+                      children: [
+                        Text('итог: '),
+                        (_userSalary[i].salary != 'null') ?
+                        Text(_userSalary[i].salary) :
+                        Text('0')
+                      ],
+                    ),
+                  ],
+                );
+            })
+      )),
+
+      )),
+            Padding(
+                padding: EdgeInsets.symmetric(vertical: 10,  horizontal: 15),
+                child:
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: Expanded(
+                      child: SizedBox(
+                          height: 200.0,
+                          child: ListView.builder(
+                              itemCount: _userFinesStory.length,
+                              itemBuilder: (context, i) {
+                                return
+                                  Column(
+                                    children: [
+                                      Text('месяц: 0${i+1}'),
+                                      Row(
+                                        children: [
+                                          Text('штрафы: '),
+                                          (_userFinesStory[i].fine != 'null') ?
+                                          Text(_userFinesStory[i].fine) :
+                                          Text('0')
+                                        ],
+                                      ),
+//                                      Row(
+//                                        children: [
+//                                          Text('бонусы: '),
+//                                          (_userFines[i].fines != 'null') ?
+//                                          Text(_userFines[i].fines) :
+//                                          Text('will be')
+//                                        ],
+//                                      ),
+                                    ],
+                                  );
+                              })
+                      )),
+                ))
           ],
         ),
       ),
-    ));
+    )
+    );
   }
 }

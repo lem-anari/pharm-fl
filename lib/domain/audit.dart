@@ -13,6 +13,7 @@ class Audit {
     delegate = json["delegate"];
     delay = json["delay"];
     done = json["done"];
+    id = json["id"];
   }
 
 

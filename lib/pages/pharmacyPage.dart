@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:farma_app/domain/pharmacy.dart';
 import 'package:farma_app/domain/all_productsInPharmacy.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PharmacyPage extends StatefulWidget {
 //  const PharmacyPage({Key key}) : super(key: key);
@@ -14,34 +16,30 @@ class PharmacyPage extends StatefulWidget {
 
 class _PharmacyPageState extends State<PharmacyPage> {
   int sectionIndexPharmacy = 0;
+  SharedPreferences sharedPreferences;
   String nameP;
   int id;
   String nameProductCurrent;
   var filterHeight = 0.0;
-  var filterTitle = '';
-  var filterTitleController = TextEditingController();
+  var addAmount = '';
+  var addPrice = '';
+  var filterPriceController = TextEditingController();
   var filterAmountController = TextEditingController();
   var filterText = '';
 
 
 
   List<Pharmacy> _pharmacies = List<Pharmacy>();
-
   Future <List<Pharmacy>> fetchPharmacies() async{
     var response = await http.get(Uri.parse("http://10.0.2.2:8000/api/pharm/all_pharmacies"));
     var pharmacies = List<Pharmacy>();
-
     if(response.statusCode == 200) {
-
       Map<String, dynamic> map = json.decode(response.body);
       List<dynamic> pharmaciesJson = map["pharmacies"];
-
       print(pharmaciesJson[0]["nameofpharm"]);
-
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
       for(var pharmacyJson in pharmaciesJson){
-//        print('wriiiite: ${pharmacyJson}');
         pharmacies.add(Pharmacy.fromJson(pharmacyJson));
       }
     }
@@ -61,21 +59,87 @@ class _PharmacyPageState extends State<PharmacyPage> {
 
       Map<String, dynamic> map = json.decode(response.body);
       List<dynamic> productsJson = map["supplyProductsName"];
-
-//      print(productsJson[0]["supplyProductsName"]);
       print("here error");
       print(productsJson[0]);
 
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
       for(var productJson in productsJson){
-//        print('wriiiite: ${productJson[0]}');
-//        nameProducts.add(AllProductsInPharmacy.fromJson(productJson[0]));
         print('wriiiite: ${productJson}');
         nameProducts.add(AllProductsInPharmacy.fromJson(productJson));
       }
     }
     return nameProducts;
+  }
+
+  setApplyProduct(String namePharm, nameProd, price, amount) async {
+    DateTime currentTime = DateTime.now().toLocal();
+
+    sharedPreferences = await SharedPreferences.getInstance();
+    var emp_id = sharedPreferences.getString("employee_id");
+//    print('TIME ${currentTime}');
+    print('TIME ${DateTime.parse('${currentTime}-03:00')}');
+    Map audit_time = {
+      'currentTime': DateTime.parse('${currentTime}-03:00').toString(),
+      'namePharm' : namePharm,
+      'emp_id' : emp_id
+    };
+    var responseCurrentTimeAudit = await http.post(Uri.parse("http://10.0.2.2:8000/api/audit/get_audit_dateTime"), body: audit_time);
+    var jsonResponse = null;
+    var jsonResponseTime = null;
+    print('namePharm${namePharm}');
+    print('nameofproduct${nameProd}');
+    print('priceofproduct${price}');
+    print('amountofproduct${amount}');
+    if(responseCurrentTimeAudit.statusCode == 200){
+      jsonResponseTime = json.decode(responseCurrentTimeAudit.body);
+      Map<String, dynamic> map = json.decode(responseCurrentTimeAudit.body);
+//      print(responseCurrentTimeAudit.body);
+      String pharmNameJson = map["pharm_name"];
+//      print('PHARM NAME ${pharmNameJson}');
+//      print('PHARM NAME ${namePharm}');
+      if(pharmNameJson == namePharm){
+        Map<String,dynamic> currauditTimeJson = map["auditDateTime"];
+        Map data = {
+          'nameofpharm': namePharm,
+          'nameofproduct': nameProd,
+          'priceofproduct': price,
+          'amountofproduct': amount,
+          'audit_id' : currauditTimeJson['id'].toString()
+        };
+        print('YOU CAN DO PURCHASE');
+        var response = await http.post(Uri.parse("http://10.0.2.2:8000/api/purchases/setPurchase"), body: data);
+        if(jsonResponseTime != null) {
+          setState(() {});
+          if(response.statusCode == 200) {
+            jsonResponse = json.decode(response.body);
+            print('Response status: ${response.statusCode}');
+            print('Response body: ${response.body}');
+            if(jsonResponse != null) {
+              setState(() {});
+            }else {
+              setState(() {});
+              print(response.body);
+
+            }
+          }
+          }
+        }
+        else {
+          setState(() {});
+        }
+      }else{
+        setState(() {});
+        Fluttertoast.showToast(
+            msg: "Вы не можете вносить данные вне время аудита",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0);
+//        print('responseCurrentTimeAudit.body${responseCurrentTimeAudit.body}');
+    }
   }
 
   @override
@@ -105,9 +169,9 @@ class _PharmacyPageState extends State<PharmacyPage> {
                     Expanded(
                       flex: 1,
                       child: TextFormField(
-                        controller: filterTitleController,
+                        controller: filterPriceController,
                         decoration: const InputDecoration(labelText: 'Price'),
-                        onChanged: (String val) => setState(() => filterTitle = val),
+                        onChanged: (String val) => setState(() => addPrice = val),
                       ),
 
                     ),
@@ -118,7 +182,7 @@ class _PharmacyPageState extends State<PharmacyPage> {
                       TextFormField(
                         controller: filterAmountController,
                         decoration: const InputDecoration(labelText: 'Amount'),
-                        onChanged: (String val) => setState(() => filterTitle = val),
+                        onChanged: (String val) => setState(() => addAmount = val),
                       ),
                     ),
                     ]),
@@ -130,6 +194,7 @@ class _PharmacyPageState extends State<PharmacyPage> {
                               child: RaisedButton(
                                 onPressed: () {
                                   print('APPLY');
+                                  setApplyProduct(nameP, nameProductCurrent, addPrice, addAmount);
                                 },
                                 child:
                                 Text("Apply", style: TextStyle(color: Colors.white)),
@@ -141,7 +206,9 @@ class _PharmacyPageState extends State<PharmacyPage> {
                               flex: 1,
                               child: RaisedButton(
                                 onPressed: () {
-                                  print('CLEAR');
+                                  filterAmountController.clear();
+                                  filterPriceController.clear();
+//                                  filterHeight = 0.0;
                                 },
                                 child:
                                 Text("Clear", style: TextStyle(color: Colors.white)),
@@ -301,7 +368,6 @@ class _PharmacyPageState extends State<PharmacyPage> {
                                       nameProductCurrent = _productsInPharmacy[j].nameofproduct,
                                       filterHeight = (filterHeight == 0.0 ? 180.0 : 0.0),
 
-
                                     });
                                   },
                                 ),
@@ -318,22 +384,4 @@ class _PharmacyPageState extends State<PharmacyPage> {
   }
 }
 
-//Widget subtitle(BuildContext context, Pharmacy pharmacy) {
-//  var color = Colors.grey;
-//  double indicatorLevel = 0;
-//
-//  switch (pharmacy.level) {
-//    case 'Beginner':
-//      color = Colors.green;
-//      indicatorLevel = 0.33;
-//      break;
-//    case 'Intermediate':
-//      color = Colors.yellow;
-//      indicatorLevel = 0.66;
-//      break;
-//    case 'Advanced':
-//      color = Colors.red;
-//      indicatorLevel = 1;
-//      break;
-//  }
 

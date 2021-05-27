@@ -132,10 +132,7 @@ class _LoginPageState extends State<LoginPage> {
     var jsonResponse = null;
 
     var response = await http.post(Uri.parse("http://10.0.2.2:8000/api/login"), body: data);
-//    var response = await http.post(Uri.parse("http://192.168.1.102:8000/api/login"), body: data);
-
-
-//    var response = await http.post(Uri.parse("http://127.0.0.1:31774/api/login"), body: data);//31774
+//    var response = await http.post(Uri.parse("http://192.168.0.105:8000/api/login"), body: data);
 
     if(response.statusCode == 200) {
       jsonResponse = json.decode(response.body);
@@ -149,6 +146,7 @@ class _LoginPageState extends State<LoginPage> {
         sharedPreferences.setString("name", jsonResponse['name']);
         sharedPreferences.setString("email", jsonResponse['email']);
         sharedPreferences.setString("user_id", jsonResponse['user_id'].toString());
+        sharedPreferences.setString("employee_id", jsonResponse['employee_id'].toString());
 //        print('WIHEFOIWHEFHEWLFHL');
 //        print(sharedPreferences.getString("user_id"));
         Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => MainPage()), (Route<dynamic> route) => false);
