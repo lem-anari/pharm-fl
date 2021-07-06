@@ -90,10 +90,13 @@ class _LoginPageState extends State<LoginPage> {
                     showlogin = true;
                     });
                 }),
+
             ),
                   ],
+
             )),
-            _bottomWave()
+            _bottomWave(),
+
           ],
         ),
       ),
@@ -147,6 +150,7 @@ class _LoginPageState extends State<LoginPage> {
         sharedPreferences.setString("email", jsonResponse['email']);
         sharedPreferences.setString("user_id", jsonResponse['user_id'].toString());
         sharedPreferences.setString("employee_id", jsonResponse['employee_id'].toString());
+        sharedPreferences.setString("role", jsonResponse['role'].toString());
 //        print('WIHEFOIWHEFHEWLFHL');
 //        print(sharedPreferences.getString("user_id"));
         Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => MainPage()), (Route<dynamic> route) => false);
@@ -266,7 +270,8 @@ class _LoginPageState extends State<LoginPage> {
                 controller: nameController,
                 cursorColor: Colors.white,
 
-                style: TextStyle(color: Colors.white70),
+            style: TextStyle(color: Colors.black, fontSize: 20),
+//            style: TextStyle(color: Colors.black),
                 decoration: InputDecoration(
                   icon: Icon(Icons.supervised_user_circle, color: Colors.white70),
                   hintText: "Name",
@@ -279,7 +284,8 @@ class _LoginPageState extends State<LoginPage> {
             controller: emailController,
             cursorColor: Colors.white,
 
-            style: TextStyle(color: Colors.white70),
+//            style: TextStyle(color: Colors.white70),
+            style: TextStyle(color: Colors.black, fontSize: 20),
             decoration: InputDecoration(
               icon: Icon(Icons.email, color: Colors.white70),
               hintText: "Email",
@@ -292,7 +298,7 @@ class _LoginPageState extends State<LoginPage> {
             controller: passwordController,
             cursorColor: Colors.white,
             obscureText: true,
-            style: TextStyle(color: Colors.white70),
+            style: TextStyle(color: Colors.black, fontSize: 20),
             decoration: InputDecoration(
               icon: Icon(Icons.lock, color: Colors.white70),
               hintText: "Password",
@@ -306,7 +312,7 @@ class _LoginPageState extends State<LoginPage> {
             controller: passwordConfirmController,
             cursorColor: Colors.white,
             obscureText: true,
-            style: TextStyle(color: Colors.white70),
+            style: TextStyle(color: Colors.black, fontSize: 20),
             decoration: InputDecoration(
               icon: Icon(Icons.lock, color: Colors.white70),
               hintText: "Confirm password",

@@ -27,11 +27,20 @@ class ApplicationBloc with ChangeNotifier {
   List<Place> placeResults;
   List<Marker> markers = List<Marker>();
 
+//  Timer timer;
+
+//  void initState() {
+//    super.initState();
+//    timer = Timer.periodic(Duration(seconds: 15), (Timer t) => checkForNewSharedLists());
+//  }
   ApplicationBloc() {
+
     setCurrentLocation();
+//    timer = Timer.periodic(Duration(seconds: 15), (Timer t) => setCurrentLocation());
   }
 
   setCurrentLocation() async {
+//    sharedPreferences = await SharedPreferences.getInstance();
     currentLocation = await geoLocatorService.getCurrentLocation();
     selectedLocationStatic = Place(
       name: null,
@@ -40,7 +49,8 @@ class ApplicationBloc with ChangeNotifier {
             lat: currentLocation.latitude, lng: currentLocation.longitude),
       ),
     );
-    print(currentLocation);
+    print('currentLocation ${currentLocation}'); //don't print
+
     notifyListeners();
   }
 
@@ -68,7 +78,6 @@ class ApplicationBloc with ChangeNotifier {
   togglePlaceType(String value, bool selected) async {
     if (selected) {
       placeType = value;
-//      print(placeType);
     } else {
       placeType = null;
     }

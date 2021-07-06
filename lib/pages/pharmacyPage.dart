@@ -60,14 +60,27 @@ class _PharmacyPageState extends State<PharmacyPage> {
       Map<String, dynamic> map = json.decode(response.body);
       List<dynamic> productsJson = map["supplyProductsName"];
       print("here error");
-      print(productsJson[0]);
-
+      print(productsJson.length);
+//      print(productsJson[0]);
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
-      for(var productJson in productsJson){
-        print('wriiiite: ${productJson}');
-        nameProducts.add(AllProductsInPharmacy.fromJson(productJson));
+      if(productsJson.length != 0){
+        bool matched = false;
+        for (var productJson in productsJson) {
+          print('wriiiite: ${productJson}');
+          for(int a=0; a<nameProducts.length; a++){
+            if(nameProducts[a].nameofproduct == productJson[0]){
+              matched = true;
+            }
+          }
+          if(matched == false){
+            nameProducts.add(AllProductsInPharmacy.fromJson(productJson));
+          }
+
+        }
       }
+
+
     }
     return nameProducts;
   }
@@ -128,6 +141,14 @@ class _PharmacyPageState extends State<PharmacyPage> {
         else {
           setState(() {});
         }
+      Fluttertoast.showToast(
+          msg: "Успешно заполнено!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.lightGreen,
+          textColor: Colors.white,
+          fontSize: 16.0);
       }else{
         setState(() {});
         Fluttertoast.showToast(

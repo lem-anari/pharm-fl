@@ -27,4 +27,49 @@ class AuditPharmName {
     print(pharmacy);
   }
 }
+class AuditDone {
+  String dateandtime;
+//  bool delegate;
+  String done;
+  String delay;
+  AuditDone({this.dateandtime,  this.done, this.delay});
+  AuditDone.fromJson(Map<String, dynamic> json_){
+    dateandtime = json_["dateandtime"].toString();
+//    delegate = json_[0];
+    done = json_['done'].toString();
+    delay = json_['delay'].toString();
+    print(dateandtime);
+  }
+}
+
+class AuditDelay {
+  String dateandtime;
+//  bool delegate;
+  String done;
+  String delay;
+  AuditDelay({this.dateandtime,  this.done, this.delay});
+  AuditDelay.fromJson(Map<String, dynamic> json_){
+    dateandtime = json_["dateandtime"].toString();
+//    delegate = json_[0];
+    done = json_['done'].toString();
+    delay = json_['delay'].toString();
+    print(dateandtime);
+  }
+}
+
+class AuditPlan {
+  String dateandtime;
+//  bool delegate;
+  String done;
+  String delay;
+  AuditPlan({this.dateandtime,  this.done, this.delay});
+  AuditPlan.fromJson(Map<String, dynamic> json_){
+    dateandtime = json_["dateandtime"].toString();
+//    delegate = json_[0];
+    done = json_['done'].toString();
+    delay = json_['delay'].toString();
+    print(dateandtime);
+  }
+}
+
 

@@ -1,35 +1,28 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:farma_app/components/map-src/application-bloc.dart';
-import 'package:farma_app/pages/newsPage.dart';
-import 'package:farma_app/pages/pharmacyPage.dart';
+import 'package:farma_app/components/mapAdmin.dart';
+import 'package:farma_app/pages/forAdmin/auditsPageAdmin.dart';
+import 'package:farma_app/pages/forAdmin/pharmacyPageAdmin.dart';
+//import 'package:farma_app/pages/pharmacyPage.dart';
 import 'package:flutter/material.dart';
 import 'package:farma_app/components/map.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'auditsPage.dart';
+//import 'auditsPage.dart';
+//import 'forAdmin/pharmacyPageAdmin.dart';
 
 class HomePageAdmin extends StatefulWidget {
   HomePageAdmin({Key key}) : super(key: key);
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _HomePageAdminState createState() => _HomePageAdminState();
 }
 
-class _HomePageState extends State<HomePageAdmin> {
+class _HomePageAdminState extends State<HomePageAdmin> {
   int sectionIndex = 0;
   GlobalKey _bottomNavigationKey = GlobalKey();
 
-//  SharedPreferences sharedPreferences;
-//  Future <int> fetchNews() async {
-//    sharedPreferences = await SharedPreferences.getInstance();
-////    sharedPreferences = await SharedPreferences.getInstance();
-//    int news = sharedPreferences.getInt("news");
-//    sectionIndex = news;
-//    print('neeeeeeeeeeeeeeeeeeeeeeews');
-//    print(news);
-//    return sectionIndex;
-//  }
 
 //  @override
 //  void initState(){
@@ -92,12 +85,12 @@ class _HomePageState extends State<HomePageAdmin> {
           ),
         ),
         body: (sectionIndex == 0)
-            ? PharmacyPage()
+            ? PharmacyPageAdmin()
             : (sectionIndex == 1)
-            ? AuditsPage()
+            ? AuditsPageAdmin()
             : (sectionIndex == 2)
-            ? HomeScreen()
-            : HomeScreen(),
+            ? MapAdmin()
+            : MapAdmin(),
         bottomNavigationBar: navigationBar,
       ),
     );

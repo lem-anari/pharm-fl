@@ -31,6 +31,7 @@
 import 'dart:convert';
 
 import 'package:farma_app/domain/salary.dart';
+import 'package:farma_app/pages/forAdmin/statisticPage.dart';
 import 'package:farma_app/pages/home.dart';
 import 'package:farma_app/pages/homeAdmin.dart';
 import 'package:farma_app/pages/loginPage.dart';
@@ -216,9 +217,11 @@ class _MainPageState extends State<MainPage> {
 //              sharedPreferences.clear();
 //              sharedPreferences.commit();
 //              sharedPreferences.setInt('news', 3);
-              Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => NewsPage()), (Route<dynamic> route) => false);
+              (role == '1')
+                  ? Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => StatisticPage()), (Route<dynamic> route) => false)
+              : Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => NewsPage()), (Route<dynamic> route) => false);
             },
-            child: Icon(Icons.new_releases_outlined, color: Colors.white),
+            child: Icon(Icons.rate_review_outlined, color: Colors.white),
           ),
           FlatButton(
             minWidth: 12,
@@ -232,7 +235,7 @@ class _MainPageState extends State<MainPage> {
         ],
       ),
       // ignore: unrelated_type_equality_checks
-      body: (role == 1) ? HomePageAdmin() : HomePage(),
+      body: (role == '1') ? HomePageAdmin() : HomePage(),
 
     drawer: Theme(
     data: Theme.of(context).copyWith(
@@ -252,6 +255,8 @@ class _MainPageState extends State<MainPage> {
               ),
             ),
             new Divider(),
+            (role == '2')
+                ?
       Padding(
         padding: EdgeInsets.symmetric(vertical: 10,  horizontal: 15),
         child:
@@ -281,7 +286,7 @@ class _MainPageState extends State<MainPage> {
                     Text('бонусы: '),
                     (_userFines[i].fines != 'null') ?
                     Text(_userFines[i].fines) :
-                    Text('will be')
+                    Text('1')
                   ],
                 ),
                 Row(
@@ -305,7 +310,9 @@ class _MainPageState extends State<MainPage> {
             })
       )),
 
-      )),
+      )): SizedBox(),
+            (role == '2')
+                ?
             Padding(
                 padding: EdgeInsets.symmetric(vertical: 10,  horizontal: 15),
                 child:
@@ -313,7 +320,7 @@ class _MainPageState extends State<MainPage> {
                   alignment: Alignment.topCenter,
                   child: Expanded(
                       child: SizedBox(
-                          height: 200.0,
+                          height: 300.0,
                           child: ListView.builder(
                               itemCount: _userFinesStory.length,
                               itemBuilder: (context, i) {
@@ -329,19 +336,20 @@ class _MainPageState extends State<MainPage> {
                                           Text('0')
                                         ],
                                       ),
-//                                      Row(
-//                                        children: [
-//                                          Text('бонусы: '),
-//                                          (_userFines[i].fines != 'null') ?
-//                                          Text(_userFines[i].fines) :
-//                                          Text('will be')
-//                                        ],
-//                                      ),
+                                      Row(
+                                        children: [
+                                          Text('бонусы: '),
+                                          (i == 4 || i==5) ?
+                                          Text('1') :
+                                          Text('0')
+                                        ],
+                                      ),
                                     ],
                                   );
                               })
                       )),
                 ))
+            : SizedBox()
           ],
         ),
       ),
